@@ -1,7 +1,8 @@
 package com.nishasoni.springboot.controller;
 
-import com.nishasoni.springboot.entity.User;
+import com.nishasoni.springboot.dto.UserDto;
 import com.nishasoni.springboot.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,34 +19,34 @@ public class UserController {
 
     // build create User REST API
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        User savedUser = userService.createUser(user);
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user){
+        UserDto savedUser = userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     // build get user by id REST API
     // http://localhost:8080/api/users/1
     @GetMapping("{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId){
-        User user = userService.getUserById(userId);
+    public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long userId){
+        UserDto user = userService.getUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     // Build Get All Users REST API
     // http://localhost:8080/api/users
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDto>> getAllUsers(){
+        List<UserDto> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     // Build Update User REST API
     @PutMapping("{id}")
     // http://localhost:8080/api/users/1
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long userId,
-                                           @RequestBody User user){
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long userId,
+                                              @RequestBody @Valid UserDto user){
         user.setId(userId);
-        User updatedUser = userService.updateUser(user);
+        UserDto updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
@@ -55,4 +56,18 @@ public class UserController {
         userService.deleteUser(userId);
         return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
     }
+
+//    @ExceptionHandler(ResourceNotFoundException.class)
+//    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception,
+//                                                                        WebRequest webRequest){
+//
+//        ErrorDetails errorDetails = new ErrorDetails(
+//                LocalDateTime.now(),
+//                exception.getMessage(),
+//                webRequest.getDescription(false),
+//                "USER_NOT_FOUND"
+//        );
+//
+//        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+//    }
 }
